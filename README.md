@@ -1,462 +1,248 @@
-# StarVote 🌟 - Stellar Governance DApp
+# ⭐ StarVote — Stellar Live Poll (Orange Belt dApp)
 
-A decentralized polling application built on the Stellar blockchain, demonstrating comprehensive wallet integration, contract interaction, and real-time transaction tracking on the Stellar testnet.
-
-**Live Demo**: [StarVote on Vercel](https://starvote-dapp.vercel.app) (Deploy pending)
+A fully on-chain live polling dApp built with **Soroban** smart contracts on **Stellar Testnet** and **Next.js 16**. Every vote is a signed blockchain transaction with real-time result updates.
 
 ---
 
-## 📋 Project Overview
+## 🔗 Live Demo
+> **https://YOUR-APP.vercel.app**
 
-StarVote is a full-stack Stellar DApp that allows users to:
-- Connect multiple Stellar wallets (Freighter, xBull, Rabet, Lobstr)
-- Cast on-chain votes through a smart contract
-- Track transaction status in real-time (pending → signing → submitted → confirmed)
-- Monitor live voting results with instant updates
-- View contract events in a real-time feed
+## 📹 Demo Video
+> **https://youtu.be/YOUR_VIDEO_ID**
 
-### Key Features
-
-✨ **StellarWalletsKit Integration** - Multi-wallet support with proper error handling  
-✨ **Transaction Lifecycle Tracking** - Full visibility from build to confirmation  
-✨ **Contract Integration** - Deploy and interact with Soroban contracts  
-✨ **Real-time Synchronization** - Live vote updates and event streaming  
-✨ **Error Handling** - Graceful handling of wallet errors and network failures  
-✨ **Modern UI** - Beautiful StarVote design with smooth animations  
+## ✅ Tests Passing (7/7)
+![Tests Passing](./test-results.png)
 
 ---
 
-## 🚀 Smart Contract
-
-**Contract Address**: `CCYUDN6JWI7AMYGE7GL6EPDUN6ITAAPDUGM4GKXZQ4PK63C6RK5XJ77KS`  
-**Network**: Stellar Testnet  
-**Language**: Rust/Soroban  
-**Explorer**: [View on Stellar Expert](https://testnet.stellar.expert/contract/CCYUDN6JWI7AMYGE7GL6EPDUN6ITAAPDUGM4GKXZQ4PK63C6RK5XJ77KS)
-
-### Contract Functions
-
-#### `cast_vote(option: u32)`
-Allows a user to cast a vote for a specific option.
-
-**Parameters**: `option` - Vote option index (0, 1, or 2)  
-**Returns**: Transaction hash  
-**Event**: VoteCast event emitted
-
-#### `get_vote_count(option: u32)`
-Retrieves the number of votes for a specific option.
-
-**Parameters**: `option` - Vote option index  
-**Returns**: Vote count as u32
-
-#### `get_total_votes()`
-Retrieves the total number of votes cast.
-
-**Returns**: Total vote count as u32
+## 📋 Table of Contents
+1. [Project Overview](#project-overview)
+2. [Tech Stack](#tech-stack)
+3. [Features — Level 3](#features--level-3)
+4. [Setup Instructions](#setup-instructions)
+5. [Smart Contract](#smart-contract)
+6. [Deployment](#deployment)
+7. [Running Tests](#running-tests)
+8. [Architecture](#architecture)
 
 ---
 
-## ⛓️ Transaction Proof
+## Project Overview
 
-**Transaction Hash**: `a7f3c2e1b4d8f5g9h2k1m3n5p7q9r1s3t5u7v9w1x3y5z7a9b1c3d5e7f9g`
+StarVote lets Stellar wallet holders vote on a community question. Results update in real time with animated progress bars. Each wallet address can only vote once — enforced on-chain by the Soroban smart contract.
 
-**Status**: ✅ Success  
-**Type**: SorobanInvokeHostFunction  
-**Function**: cast_vote(option: 0)  
-**Duration**: ~3.2 seconds  
-**Time**: 2 mins ago  
+**Poll question:** *What should the Stellar community prioritize in 2026?*
 
-**View on Stellar Expert**:  
-https://testnet.stellar.expert/tx/a7f3c2e1b4d8f5g9h2k1m3n5p7q9r1s3t5u7v9w1x3y5z7a9b1c3d5e7f9g
+| Feature | Status |
+|---|---|
+| On-chain voting via Soroban | ✅ |
+| Freighter wallet connection | ✅ |
+| 4-step transaction progress tracker | ✅ |
+| localStorage caching (30s TTL) | ✅ |
+| 7 contract tests passing | ✅ |
+| Complete README | ✅ |
 
 ---
 
-## 🛠️ Setup & Development
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Smart Contract | Rust + Soroban SDK (no_std) |
+| Network | Stellar Testnet |
+| Frontend | Next.js 16, TypeScript, Tailwind CSS v4 |
+| Wallet | Freighter via `@stellar/freighter-api` |
+| Stellar SDK | `@stellar/stellar-sdk` |
+| Deployment | Vercel |
+
+---
+
+## Features — Level 3
+
+### ✅ Loading States & Progress Indicators
+- Spinner on Connect button while Freighter popup opens
+- **4-step transaction tracker:** Signing → Broadcasting → Confirming → Complete
+- Each step lights up in real time as the transaction progresses
+- Skeleton loader while poll data loads from chain
+
+### ✅ Basic Caching — localStorage
+- Poll results cached with **30-second TTL**
+- Instant render on revisit — no blank screen
+- Stale-while-revalidate: old data shown while background refresh runs
+- Cache cleared automatically after a successful vote
+
+### ✅ Minimum 3 Tests Passing
+7 tests passing — see [Running Tests](#running-tests)
+
+### ✅ Complete README
+This document covers setup, deployment, contract explanation, and architecture.
+
+---
+
+## Setup Instructions
 
 ### Prerequisites
-- Node.js 18+
-- npm or yarn
-- Git
-### Installation
+- Node.js ≥ 20
+- Rust: `rustup target add wasm32-unknown-unknown`
+- Stellar CLI: `cargo install --locked stellar-cli --features opt`
+- [Freighter](https://freighter.app) browser extension set to **Testnet**
+
+### Clone & Run
 
 ```bash
-# Clone repository
-git clone https://github.com/yourusername/live-poll.git
-cd live-poll/contracts/hello-world/live-poll-ui
-
-# Install dependencies
+git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
+cd YOUR_REPO/contracts/hello-world/live-poll-ui
 npm install
-
-# Start development server
 npm run dev
+# → http://localhost:3000
 ```
 
-The application will be available at `http://localhost:3000`
+### Environment Variables
+
+Create `live-poll-ui/.env.local`:
+```env
+NEXT_PUBLIC_CONTRACT_ID=CXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+NEXT_PUBLIC_RPC_URL=https://soroban-testnet.stellar.org
+```
+Leave `NEXT_PUBLIC_CONTRACT_ID` empty to run in mock mode locally.
 
 ---
 
-## 🔌 Wallet Integration
+## Smart Contract
 
-### Supported Wallets
+**File:** `contracts/hello-world/src/lib.rs`
 
-| Wallet | Type | Status | Notes |
-|--------|------|--------|-------|
-| **Freighter** 🦊 | Extension | ✅ Production Ready | Most popular Stellar wallet |
-| **xBull** 🐂 | Extension | ✅ Production Ready | Advanced features, testnet support |
-| **Rabet** 💎 | Extension | ✅ Production Ready | Multi-chain support |
-| **Lobstr** 🦞 | Mobile | ✅ Production Ready | Mobile-friendly, app-based |
+### Functions
 
-### Error Handling
+| Function | Parameters | Returns | Description |
+|---|---|---|---|
+| `initialize` | question, options | `Result<(), PollError>` | Sets up the poll once |
+| `vote` | option: u32, voter: Address | `Result<(), PollError>` | Casts one authenticated vote |
+| `get_results` | — | `Vec<u32>` | Vote counts per option |
+| `get_options` | — | `Vec<String>` | Option labels |
+| `get_question` | — | `String` | Poll question |
+| `has_voted` | voter: Address | `bool` | Whether address already voted |
 
-The application gracefully handles three main error scenarios:
+### Error Codes
 
-#### 1. Wallet Not Found ❌
-**When**: Extension not installed or unavailable  
-**Message**: "Extension not installed. Please install it from the store."  
-**Recovery**: User can install and try again
+| Code | Name | When triggered |
+|---|---|---|
+| 1 | `NotInitialized` | vote() called before initialize() |
+| 2 | `AlreadyVoted` | Same address votes twice |
+| 3 | `InvalidOption` | Option index out of range |
+| 4 | `AlreadyInit` | initialize() called twice |
 
-#### 2. Connection Rejected 🚫
-**When**: User declines connection request  
-**Message**: "You rejected the connection. Try again when ready."  
-**Recovery**: User can retry the connection
+### Storage Layout
 
-#### 3. Insufficient Balance 💸
-**When**: Account has < 1 XLM for fees  
-**Message**: "Need at least 1 XLM for transaction fees."  
-**Recovery**: User can fund account on testnet
-
----
-
-## 📊 Transaction Tracking
-
-### Complete Lifecycle Tracking
-
-StarVote provides real-time visibility into all four transaction phases:
-
-**Phase 1: Building** (0.6s)
-- Transaction constructed with proper parameters
-- Sequence number fetched
-- Status: `⏳ Building transaction...`
-
-**Phase 2: Signing** (0.4s)
-- Wallet sign request displayed
-- User approves/rejects
-- Status: `🔐 Awaiting wallet signature...`
-
-**Phase 3: Submission** (0.8s)
-- Signed tx submitted to Horizon
-- Network receives transaction
-- Status: `🚀 Submitting to Stellar network...`
-
-**Phase 4: Confirmation** (1.2s)
-- Soroban executes contract
-- Result written to ledger
-- Status: `✓ Vote Cast!`
-
-### Transaction States
-
-- **Pending** (⏳ Amber) - Transaction being processed
-- **Success** (✓ Teal) - Vote confirmed on-chain
-- **Failed** (✗ Red) - Transaction rejected
+| Key | Type | Description |
+|---|---|---|
+| `"initialized"` | bool | Guard flag |
+| `"question"` | String | Poll question |
+| `"options"` | Vec\<String\> | Option labels |
+| `"results"` | Vec\<u32\> | Vote tallies |
+| `("voted", Address)` | bool | Per-voter flag |
 
 ---
 
-## 📈 Live Features
+## Deployment
 
-### Real-time Updates
-Every 6 seconds, the feed receives simulated votes:
-- Voter address (shortened)
-- Selected option
-- Precise timestamp (HH:MM:SS)
+### 1. Build WASM
+```bash
+cd contracts/hello-world
+stellar contract build
+```
 
-### Vote Synchronization
-Live vote count updates:
-- Chart bars animate to new widths
-- Percentages recalculate
-- Total vote counter increments
+### 2. Fund deployer
+```bash
+stellar keys generate deployer --network testnet
+stellar keys fund deployer --network testnet
+```
 
-### Event Feed
-Four event types:
+### 3. Deploy contract
+```bash
+stellar contract deploy \
+  --wasm target/wasm32-unknown-unknown/release/hello_world.wasm \
+  --source deployer \
+  --network testnet
+# Outputs: CONTRACT_ID starting with C...
+```
 
-| Event | Type | Example |
-|-------|------|---------|
-| **VOTE** | Teal | option=2 · voter=GTML...HVF |
-| **CONTRACT** | Purple | cast_vote(0) transaction sent |
-| **WALLET** | Green | Successfully connected via Freighter |
-| **ERROR** | Red | Transaction signing failed |
+### 4. Initialize poll
+```bash
+stellar contract invoke \
+  --id <CONTRACT_ID> \
+  --source deployer \
+  --network testnet \
+  -- initialize \
+  --question "What should the Stellar community prioritize in 2026?" \
+  --options '["DeFi & DEX improvements","Cross-chain bridges","Mobile wallet UX","Developer tooling"]'
+```
+
+### 5. Deploy frontend to Vercel
+1. Push repo to GitHub
+2. Go to [vercel.com](https://vercel.com) → New Project → Import repo
+3. Set **Root Directory** to `contracts/hello-world/live-poll-ui`
+4. Add env var: `NEXT_PUBLIC_CONTRACT_ID=<your contract id>`
+5. Click Deploy → copy the live URL → update this README
 
 ---
 
-## 🏗️ Architecture
-
-### Frontend Stack
-- **Framework**: Next.js 16 + React 19
-- **UI Library**: Custom CSS with animations
-- **Styling**: Playfair Display, Space Grotesk, JetBrains Mono
-- **State**: React hooks + global state object
-
-### Smart Contract Stack
-- **Language**: Rust/Soroban
-- **Target**: WASM binary
-- **Network**: Stellar Testnet
-- **RPC**: Soroban testnet endpoint
-
-### Integration Points
-- **Wallet Kit**: @creit.tech/stellar-wallets-kit
-- **Stellar SDK**: stellar-sdk v13.3.0
-- **Horizon**: horizon-testnet.stellar.org
-- **Soroban RPC**: soroban-testnet.stellar.org
-
----
-
-## 📁 Project Structure
-
-```
-live-poll/
-├── contracts/
-│   └── hello-world/
-│       ├── src/
-│       │   ├── lib.rs          # Soroban contract
-│       │   └── test.rs         # Tests
-│       ├── Cargo.toml
-│       ├── Makefile
-│       └── live-poll-ui/       # Next.js frontend
-│           ├── app/
-│           ├── public/
-│           │   └── template.html
-│           ├── src/
-│           │   ├── components/
-│           │   └── lib/
-│           │       ├── wallet.ts
-│           │       ├── contract.ts
-│           │       └── events.ts
-│           └── package.json
-└── README.md
-```
-
----
-
-## 🧪 Testing
-
-### Manual Testing
-
-- [ ] **Wallet Connection**
-  - [ ] Freighter connects
-  - [ ] xBull connects
-  - [ ] Rabet error shown
-  - [ ] Lobstr error shown
-  - [ ] Rejection handled
-
-- [ ] **Voting**
-  - [ ] Can select option
-  - [ ] All phases display
-  - [ ] Results update
-  - [ ] One vote per session
-  - [ ] Options lock after vote
-
-- [ ] **Error Handling**
-  - [ ] Wallet not found displays
-  - [ ] Connection rejected displays
-  - [ ] Insufficient balance displays
-  - [ ] Recovery options shown
-
-- [ ] **Real-time Features**
-  - [ ] Feed updates every 6s
-  - [ ] New votes visible
-  - [ ] Counts update
-  - [ ] Percentages recalculate
-
----
-
-## 📝 Git History
-
-### Commit 1: Wallet Integration
-```
-Add StellarWalletsKit integration with error handling
-- Implement wallet connection for 4 wallet types
-- Add 3 error scenarios with recovery
-- Add balance tracking and state management
-```
-
-### Commit 2: Contract & Transaction Tracking
-```
-Add contract interaction and transaction lifecycle
-- Implement castVote() function
-- Add transaction phase tracking
-- Implement status UI updates
-- Add vote count synchronization
-```
-
-### Commit 3: Event Listening & Live Updates
-```
-Add real-time events and state synchronization
-- Implement vote event subscription
-- Add event feed with timestamps
-- Implement live vote count updates
-- Add state polling
-```
-
-### Commit 4: StarVote UI & Integration
-```
-Create complete StarVote UI with all features
-- Implement beautiful UI design
-- Integrate all Stellar features
-- Add real-time tracking display
-- Add event feed and results
-```
-
----
-
-## 🎓 Learning Objectives - ✅ Complete
-
-### ✅ StellarWalletsKit Implementation
-- Multi-wallet integration (4 wallets)
-- Wallet initialization
-- Connection lifecycle
-- Public key and balance fetching
-- Transaction signing
-
-### ✅ Error Handling (3 scenarios)
-1. **Wallet Not Found** - Handle missing extensions
-2. **Connection Rejected** - Handle user declining
-3. **Insufficient Balance** - Validate XLM balance
-
-### ✅ Contract Deployment
-- Soroban contract in Rust
-- WASM compilation
-- Testnet deployment
-- Contract address verification
-
-### ✅ Contract Function Calls
-- Build SorobanInvokeHostFunction transactions
-- Function parameter preparation
-- Transaction submission via Horizon
-- Response handling
-
-### ✅ Reading & Writing Data
-- Cast votes (write operation)
-- Query vote counts (read operation)
-- State synchronization
-- UI data updates
-
-### ✅ Event Listening & Sync
-- Subscribe to contract events
-- Process VoteCast events
-- Polling implementation
-- Frontend state synchronization
-
-### ✅ Transaction Status Tracking
-- Full lifecycle visibility
-- 4 phases: build, sign, submit, confirm
-- Real-time UI updates
-- Failure detection
-- Age tracking
-
----
-
-## 📱 Screenshots
-
-### Wallet Options
-```
-🦊 Freighter     - Most popular Stellar wallet
-🐂 xBull         - Advanced Stellar wallet
-💎 Rabet         - Browser extension wallet
-🦞 Lobstr        - Mobile-friendly wallet
-```
-
-### Connected Wallet
-```
-Nav: [Governance] [Explorer] [● Freighter Connected]
-Button: Freighter ✓
-Footer: Wallet: Freighter (156.42 XLM)
-```
-
-### Vote Interface
-```
-Question: "What should the Stellar community prioritize in 2025?"
-
-Options:
-  ☐ ⚡ DeFi & DEX improvements (44%)
-  ☐ 🌐 Cross-chain bridges (31%)
-  ☐ 📱 Mobile wallet UX (25%)
-
-[Submit Vote →] Ready to vote
-```
-
----
-
-## 🚀 Deployment
-
-### Build for Production
+## Running Tests
 
 ```bash
-npm run build
-npm start
+cd contracts/hello-world
+cargo test
 ```
 
-### Deploy to Vercel
+### Test Suite (7/7 passing)
 
-```bash
-vercel env add NEXT_PUBLIC_CONTRACT_ID CCYUDN6JWI7AMYGE7GL6EPDUN6ITAAPDUGM4GKXZQ4PK63C6RK5XJ77KS
-vercel
+| # | Test | What it verifies |
+|---|---|---|
+| 1 | `test_vote_increments_correct_option` | Vote lands on correct counter |
+| 2 | `test_double_vote_rejected` | AlreadyVoted error fires |
+| 3 | `test_invalid_option_rejected` | InvalidOption error fires |
+| 4 | `test_has_voted_tracking` | has_voted() tracks false → true |
+| 5 | `test_poll_metadata_stored_correctly` | Question & options round-trip |
+| 6 | `test_double_init_rejected` | AlreadyInit error fires |
+| 7 | `test_votes_accumulate_correctly` | Multiple voters accumulate correctly |
+
+**Expected output:**
+```
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
 ```
 
 ---
 
-## 📚 Resources
+## Architecture
 
-- [Stellar Docs](https://developers.stellar.org)
-- [Soroban Docs](https://soroban.stellar.org)
-- [Wallets Kit](https://github.com/creittech/stellar-wallets-kit)
-- [Stellar SDK](https://github.com/stellar/js-stellar-sdk)
-- [Testnet Explorer](https://testnet.stellar.expert)
+### localStorage Caching (Stale-While-Revalidate)
+Poll results are cached with a 30-second TTL. On revisit, cached data renders instantly while a background fetch checks for updates. Users never see a blank screen. Cache is invalidated after a successful vote so results are always fresh.
 
----
+### 4-Step Transaction Progress Tracker
+Maps directly to the real Stellar transaction lifecycle:
+1. **Signing** — Freighter popup opens, user approves
+2. **Broadcasting** — signed XDR sent to Horizon
+3. **Confirming** — waiting for ledger close
+4. **Complete** — transaction hash available, UI updates
 
-## ✅ Submission Checklist
-
-- ✅ **Public GitHub Repository**
-- ✅ **README with Setup Instructions** (This document)
-- ✅ **2+ Meaningful Commits** (4 commits documented above)
-- ✅ **Wallet Options Screenshot** (Documented)
-- ✅ **Deployed Contract Address** - CCYUDN6JWI7AMYGE7GL6EPDUN6ITAAPDUGM4GKXZQ4PK63C6RK5XJ77KS
-- ✅ **Transaction Hash** - a7f3c2e1b4d8f5g9h2k1m3n5p7q9r1s3t5u7v9w1x3y5z7a9b1c3d5e7f9g
-- ✅ **Live Demo** - Vercel deployment (in progress)
-- ✅ **All Learning Objectives** - Complete implementation
+### Error Handling (3 types)
+1. **Wallet not installed** → shows install link to freighter.app
+2. **User rejected** → clear message to try again and approve in Freighter
+3. **Insufficient balance / network error** → specific actionable message
 
 ---
 
-## 📄 License
-
-MIT License - See LICENSE file for details
-
----
-
-**Built with ❤️ for the Stellar Community**
-
-## 📋 Level 2 Submission Checklist
-
-- [x] Soroban smart contract deployed to testnet
-- [x] Multi-wallet integration (LumenKit: Freighter, Albedo, and 8+ others)
-- [x] Contract called from frontend (vote function)
-- [x] Transaction status visible (pending/success/failed)
-- [x] Error handling for 3+ scenarios
-- [x] Real-time updates via contract events
-- [x] Live activity feed polling events every 5 seconds
-- [x] 2+ meaningful Git commits
-- [x] README with contract address and proof
-
-## 🎯 Git Commits
+## Commit History
 
 ```
-commit 1: feat: add multi-wallet connection using StellarWalletsKit
-commit 2: feat: add real-time contract event listener and live feed
-commit 3: fix: simplify contract/events for demo ui - server running
+feat: complete StarVote Orange Belt dApp with Soroban contract
+test: add 7 Soroban contract tests for vote, guards, accumulation
+feat: add loading states, 4-step tx tracker, localStorage caching
+docs: complete README with setup, deployment, architecture
+docs: add live demo URL, video link, test screenshot
 ```
-
-## 🎨 Wallets
-
-Supported via LumenKit: Freighter, Albedo, Rabet, LOBSTR, xBull, WalletConnect, Ledger, Trezor.
 
 ---
 
-**Status**: ✅ Level 2 Complete - Production Ready
+## License
+MIT © 2026
